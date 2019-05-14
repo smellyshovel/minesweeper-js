@@ -3,10 +3,29 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Minesweeper</title>
-        <script src="./minesweeper.js" defer></script>
+
+        <link rel="preload" href="./assets/cells/closed.svg" as="image">
+        <link rel="preload" href="./assets/cells/flag.svg" as="image">
+        <link rel="preload" href="./assets/cells/doubt.svg" as="image">
+        <link rel="preload" href="./assets/cells/mine.svg" as="image">
+        <link rel="preload" href="./assets/cells/trigger.svg" as="image">
+        <link rel="preload" href="./assets/cells/opened.svg" as="image">
+        <link rel="preload" href="./assets/cells/1.svg" as="image">
+        <link rel="preload" href="./assets/cells/2.svg" as="image">
+        <link rel="preload" href="./assets/cells/3.svg" as="image">
+        <link rel="preload" href="./assets/cells/4.svg" as="image">
+        <link rel="preload" href="./assets/cells/5.svg" as="image">
+        <link rel="preload" href="./assets/cells/6.svg" as="image">
+        <link rel="preload" href="./assets/cells/7.svg" as="image">
+        <link rel="preload" href="./assets/cells/8.svg" as="image">
+        <link rel="preload" href="./assets/cells/9.svg" as="image">
+
+        <script src="index.js" defer></script>
     </head>
     <body>
-        <canvas id="minesweeper"></canvas>
+        <canvas id="minesweeper" width="600" height="600"></canvas>
+        <button id="pause">Pause</button>
     </body>
 </html>
