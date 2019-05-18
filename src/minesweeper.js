@@ -16,6 +16,13 @@ export default class Minesweeper {
             height,
             mines
         });
+
+        this.started = false;
+    }
+
+    start() {
+        this.started = true;
+        this.dispatch("start");
     }
 
     on(event, listener) {
