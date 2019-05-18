@@ -7,6 +7,13 @@ let game = new Minesweeper({
     mines: 10
 });
 
-game.on("start", () => {
-    console.log("start!");
-});
+game
+.on("start", () => {
+    console.log("Game has started!");
+})
+.on("win", () => {
+    console.log("You won!");
+})
+.on("lose", () => {
+    console.log("You lost :(");
+})

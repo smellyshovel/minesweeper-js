@@ -15,9 +15,11 @@ export default class Cell {
         this.y = y;
 
         this.image = Images.closed;
-        this.save();
 
         this.closed = true;
+        this.flagged = false;
+        this.doubted = false;
+
         this.mine = false;
         this.value = 0;
     }
@@ -48,47 +50,37 @@ export default class Cell {
         );
     }
 
-    save() {
-        this.prevImage = this.image;
-    }
-
-    reset() {
-        this.image = this.prevImage;
-    }
-
     open() {
-        if (this.closed) {
-            if (!this.field.game.started) {
-                this.field.fillCells(this);
-                this.field.game.start();
-            }
+        if (!this.field.game.started) {
+            this.field.mineCells([this, ...this.neighbours]);
+            this.field.game.dispatch("start");
+        }
 
-            if (this.value === 0) {
-                this.image = Images.opened;
-                this.neighbours.forEach(neighbour => {
-                    neighbour.open();
+        (function openCell(cell) {
+            if (!cell.closed || cell.flagged || cell.doubted) return;
+
+            if (cell.mine) {
+                cell.field.minedCells.forEach(minedCell => {
+                    minedCell.image = Images.mine;
                 });
-            } else if (this.value) {
-                this.image = Images[this.value];
-            } else if (this.mine) {
-                console.log("lost");
-                return;
-            }
-        }
-    }
 
-    leftDown() {
-        if (this.closed && !this.flagged && !this.doubted) {
-            this.save();
-            this.image = Images.opened; // substitute the image
-        }
+                cell.image = Images.trigger;
+                cell.closed = false;
+            } else {
+                cell.image = Images[cell.value];
+                cell.closed = false;
+
+                if (cell.value === 0) {
+                    cell.neighbours.forEach(neighbour => openCell(neighbour));
+                }
+            }
+        })(this);
+
+        this.field.game.dispatch("cellsopen");
     }
 
     leftUp() {
-        if (this.closed && !this.flagged && !this.doubted) {
-            this.open();
-            this.save();
-        }
+        this.open();
     }
 
     rightUp() {
@@ -100,33 +92,20 @@ export default class Cell {
                 this.flagged = false;
                 this.doubted = true;
                 this.image = Images.doubt;
-            } else if (this.doubted) {
+            } else if (this.doubted) { // already doubted
                 this.doubted = false;
                 this.image = Images.closed;
             }
-            
-            this.save();
         }
     }
 
-    middleDown() {
-        this.reset();
-
-        this.neighbours.forEach(neighbour => {
-            if (neighbour.closed && !neighbour.flagged && !neighbour.doubted) {
-                neighbour.save();
-                neighbour.image = Images.opened;
-            }
-        });
-    }
-
     middleUp() {
-        if (!this.closed && this.value > 0) {
-            let numberOfFalgged = this.neighbours.filter(neighbour => {
+        if (this.value) {
+            let flaggedNeighbours = this.neighbours.filter(neighbour => {
                 return neighbour.flagged;
-            }).length;
+            });
 
-            if (this.value === numberOfFalgged) {
+            if (flaggedNeighbours.length === this.value) {
                 this.neighbours.forEach(neighbour => {
                     neighbour.open();
                 });

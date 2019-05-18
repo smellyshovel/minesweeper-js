@@ -14,6 +14,18 @@ export default class Field {
         this.draw();
     }
 
+    get closedCells() {
+        return this.cells.filter(cell => {
+            return cell.closed;
+        });
+    }
+
+    get openedCells() {
+        return this.cells.filter(cell => {
+            return !cell.closed;
+        });
+    }
+
     initCells() {
         this.cells = Array.from(new Array(this.props.width * this.props.height), (c, i) => {
             let x = i % this.props.width;
@@ -34,8 +46,27 @@ export default class Field {
         });
     }
 
-    fillCells(exceptCell) {
+    mineCells(except) {
+        let cellsToFill = this.cells.filter(cell => {
+            return !except.includes(cell);
+        });
 
+        this.minedCells = [];
+
+        while (this.minedCells.length < this.props.mines) {
+            let cell = cellsToFill[Math.random() * cellsToFill.length | 0];
+
+            if (!cell.mine) {
+                cell.mine = true;
+                this.minedCells.push(cell);
+            }
+        }
+
+        this.minedCells.forEach(minedCell => {
+            minedCell.neighbours.forEach(neighbour => {
+                neighbour.value += 1;
+            });
+        });
     }
 
     locateCell(offsetX, offsetY) {
@@ -51,56 +82,27 @@ export default class Field {
         this.cells.forEach(cell => cell.draw());
     }
 
-    reset() {
-        this.cells.forEach(cell => cell.reset());
-        this.currentCell = null;
-    }
-
     registerEventListeners() {
         this.canvas.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         });
 
-        this.canvas.addEventListener("mousedown", (event) => {
-            this.currentCell = this.locateCell(event.offsetX, event.offsetY);
+        this.canvas.addEventListener("mouseup", (event) => {
+            let cell = this.locateCell(event.offsetX, event.offsetY);
 
-            if (event.buttons === 1) { // left button
-                this.currentCell.leftDown();
-            } else if (event.buttons > 2 && event.buttons < 8) { // middle or both left and right buttons
-                this.currentCell.middleDown();
+            if (event.buttons === 0) { // no more buttons are down
+                if (event.button === 0) { // left button
+                    cell.leftUp();
+                } else if (event.button === 2) { // right button
+                    cell.rightUp();
+                } else if (event.button === 1) { // middle button
+                    cell.middleUp();
+                }
+            } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
+                cell.middleUp();
             }
 
             this.draw();
-        });
-
-        this.canvas.addEventListener("mouseleave", (event) => {
-            if (this.currentCell) {
-                this.reset();
-                this.draw();
-            }
-        });
-
-        this.canvas.addEventListener("mouseup", (event) => {
-            if (this.currentCell) {
-                let cell = this.locateCell(event.offsetX, event.offsetY);
-
-                if (cell === this.currentCell) {
-                    if (event.buttons === 0) { // no more buttons are down
-                        if (event.button === 0) { // left button
-                            cell.leftUp();
-                        } else if (event.button === 2) { // right button
-                            cell.rightUp();
-                        } else if (event.button === 1) { // middle button
-                            cell.middleUp();
-                        }
-                    } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
-                        cell.middleUp();
-                    }
-                }
-
-                this.reset();
-                this.draw();
-            }
         });
     }
 }
