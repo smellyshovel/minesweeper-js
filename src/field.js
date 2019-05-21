@@ -10,6 +10,8 @@ export default class Field {
         this.props = props;
 
         this.initCells();
+
+        this.eventListeners = new Map();
         this.registerEventListeners();
 
         this.draw();
@@ -80,30 +82,66 @@ export default class Field {
     }
 
     draw() {
-        this.cells.forEach(cell => cell.draw());
+        if (this.game.paused) {
+            this.context.fillStyle = "#f2f2f2";
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.context.textBaseline = 'middle';
+            this.context.textAlign = "center";
+            this.context.font = `${ this.cells[0].size * 3 }px Helvetica`;
+            this.context.fillStyle = "#828282";
+            this.context.fillText("The game is paused.", this.canvas.width / 2, this.canvas.height / 2);
+        } else {
+            this.context.fillStyle = "#fff";
+            this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+            this.cells.forEach(cell => cell.draw());
+        }
     }
 
     registerEventListeners() {
+        // no need to ever unregister it
         this.canvas.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         });
 
-        this.canvas.addEventListener("mouseup", (event) => {
-            let cell = this.locateCell(event.offsetX, event.offsetY);
+        this.eventListeners.set(
+            {
+                event: "mouseup",
+                target: this.canvas
+            },
 
-            if (event.buttons === 0) { // no more buttons are down
-                if (event.button === 0) { // left button
-                    cell.leftUp();
-                } else if (event.button === 2) { // right button
-                    cell.rightUp();
-                } else if (event.button === 1) { // middle button
+            (event) => {
+                let cell = this.locateCell(event.offsetX, event.offsetY);
+                if (!cell) return;
+
+                if (event.buttons === 0) { // no more buttons are down
+                    if (event.button === 0) { // left button
+                        cell.leftUp();
+                    } else if (event.button === 2) { // right button
+                        cell.rightUp();
+                    } else if (event.button === 1) { // middle button
+                        cell.middleUp();
+                    }
+                } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
                     cell.middleUp();
                 }
-            } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
-                cell.middleUp();
-            }
 
-            this.draw();
+                this.draw();
+            }
+        );
+
+        this.eventListeners.forEach((val, key) => {
+            key.target.addEventListener(key.event, val);
         });
+    }
+
+    unregisterEventListeners() {
+        this.eventListeners.forEach((val, key) => {
+            key.target.removeEventListener(key.event, val);
+        });
+
+        this.eventListeners.clear();
+        console.log(this.eventListeners);
     }
 }

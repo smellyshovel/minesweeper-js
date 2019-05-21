@@ -37,8 +37,16 @@ export default class Minesweeper {
         .on("start", () => {
             this.started = true;
         })
-        .on("end", () => {
+        .on("end", (result) => {
             this.ended = true;
+
+            if (result === "won") {
+                this.field.minedCells.forEach(minedCell => {
+                    minedCell.flag(true);
+                });
+            }
+
+            this.field.unregisterEventListeners();
         });
     }
 
@@ -51,6 +59,20 @@ export default class Minesweeper {
         }
     }
 
+    pause() {
+        this.paused = true;
+        this.field.draw();
+        this.field.unregisterEventListeners();
+        this.dispatch("pause");
+    }
+
+    resume() {
+        this.paused = false;
+        this.field.draw();
+        this.field.registerEventListeners();
+        this.dispatch("resume");
+    }
+
     on(event, listener) {
         if (!this.eventListeners[event]) this.eventListeners[event] = [];
         this.eventListeners[event].push(listener);
@@ -59,7 +81,7 @@ export default class Minesweeper {
     }
 
     dispatch(event, ...params) {
-        this.eventListeners[event].forEach(listener => {
+        (this.eventListeners[event] || []).forEach(listener => {
             if (typeof listener === "function") {
                 listener.call(this, ...params);
             }

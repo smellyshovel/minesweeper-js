@@ -28,10 +28,15 @@
             html {
                 user-select: none;
             }
+
+            canvas {
+                border: 2px solid black;
+            }
         </style>
     </head>
     <body>
         <canvas id="minesweeper" width="600" height="600"></canvas>
-        <button id="pause">Pause</button>
+        <button id="pause" disabled>Pause</button>
+        <p id="timer"></p>
     </body>
 </html>

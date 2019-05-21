@@ -25,11 +25,14 @@ export default class Cell {
     }
 
     get bounds() {
+        let offsetX = (this.field.canvas.width - this.field.props.width * this.size) / 2;
+        let offsetY = (this.field.canvas.height - this.field.props.height * this.size) / 2;
+
         return {
-            left: this.x * this.size,
-            right: this.x * this.size + this.size,
-            top: this.y * this.size,
-            bottom: this.y * this.size + this.size
+            left: this.x * this.size + offsetX,
+            right: this.x * this.size + this.size + offsetX,
+            top: this.y * this.size + offsetY,
+            bottom: this.y * this.size + this.size + offsetY
         };
     }
 
@@ -79,10 +82,6 @@ export default class Cell {
         this.field.game.checkState();
     }
 
-    leftUp() {
-        this.open();
-    }
-
     flag(force) {
         if (this.closed) {
             if (!this.flagged && !this.doubted) { // closed but not flagged nor doubted
@@ -103,6 +102,10 @@ export default class Cell {
             this.flagged = true;
             this.image = Images.flag;
         }
+    }
+
+    leftUp() {
+        this.open();
     }
 
     rightUp() {
