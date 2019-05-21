@@ -11,6 +11,7 @@ export default class Field {
 
         this.initCells();
         this.registerEventListeners();
+
         this.draw();
     }
 
@@ -71,10 +72,10 @@ export default class Field {
 
     locateCell(offsetX, offsetY) {
         return this.cells.find(cell => {
-            return cell.bounds.left < offsetX
-                && cell.bounds.right > offsetX
-                && cell.bounds.top < offsetY
-                && cell.bounds.bottom > offsetY;
+            return cell.bounds.left <= offsetX
+                && cell.bounds.right >= offsetX
+                && cell.bounds.top <= offsetY
+                && cell.bounds.bottom >= offsetY;
         });
     }
 

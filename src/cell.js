@@ -53,7 +53,7 @@ export default class Cell {
     open() {
         if (!this.field.game.started) {
             this.field.mineCells([this, ...this.neighbours]);
-            this.field.game.dispatch("start");
+            this.field.game.dispatch("start", this);
         }
 
         (function openCell(cell) {
@@ -76,14 +76,14 @@ export default class Cell {
             }
         })(this);
 
-        this.field.game.dispatch("cellsopen");
+        this.field.game.checkState();
     }
 
     leftUp() {
         this.open();
     }
 
-    rightUp() {
+    flag(force) {
         if (this.closed) {
             if (!this.flagged && !this.doubted) { // closed but not flagged nor doubted
                 this.flagged = true;
@@ -97,6 +97,16 @@ export default class Cell {
                 this.image = Images.closed;
             }
         }
+
+        if (force) {
+            this.doubted = false;
+            this.flagged = true;
+            this.image = Images.flag;
+        }
+    }
+
+    rightUp() {
+        this.flag();
     }
 
     middleUp() {
