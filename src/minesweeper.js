@@ -38,7 +38,10 @@ export default class Minesweeper {
                 this.field.minedCells.forEach(cell => cell.flag(true));
                 this.dispatch("end", "won");
             } else if (lost) {
-                this.field.minedCells.forEach(cell => cell.image = "mine");
+                this.field.minedCells.forEach(cell => {
+                    if (!cell.isFlagged) cell.image = "mine";
+                });
+
                 this.field.flaggedCells.forEach(cell => {
                     if (!cell.isMined) cell.image = "cross";
                 });

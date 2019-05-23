@@ -4,7 +4,7 @@ let game = new Minesweeper({
     canvas: document.querySelector("canvas#minesweeper"),
     width: 30,
     height: 16,
-    mines: 12
+    mines: 99
 });
 
 let pauseButton = document.querySelector("#pause");
