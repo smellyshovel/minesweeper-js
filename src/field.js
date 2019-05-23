@@ -18,15 +18,15 @@ export default class Field {
     }
 
     get closedCells() {
-        return this.cells.filter(cell => {
-            return cell.closed;
-        });
+        return this.cells.filter(cell => cell.isClosed);
     }
 
     get openedCells() {
-        return this.cells.filter(cell => {
-            return !cell.closed;
-        });
+        return this.cells.filter(cell => cell.isOpened);
+    }
+
+    get flaggedCells() {
+        return this.cells.filter(cell => cell.isFalgged);
     }
 
     initCells() {
@@ -50,25 +50,20 @@ export default class Field {
     }
 
     mineCells(except) {
-        let cellsToFill = this.cells.filter(cell => {
-            return !except.includes(cell);
-        });
-
+        let cellsToFill = this.cells.filter(cell => !except.includes(cell));
         this.minedCells = [];
 
         while (this.minedCells.length < this.props.mines) {
             let cell = cellsToFill[Math.random() * cellsToFill.length | 0];
 
-            if (!cell.mine) {
-                cell.mine = true;
+            if (!cell.isMined) {
+                cell.isMined = true;
                 this.minedCells.push(cell);
             }
         }
 
-        this.minedCells.forEach(minedCell => {
-            minedCell.neighbours.forEach(neighbour => {
-                neighbour.value += 1;
-            });
+        this.minedCells.forEach(cell => {
+            cell.neighbours.forEach(neighbour => neighbour.value += 1);
         });
     }
 
@@ -82,13 +77,13 @@ export default class Field {
     }
 
     draw() {
-        if (this.game.paused) {
+        if (this.game.isPaused) {
             this.context.fillStyle = "#f2f2f2";
             this.context.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
             this.context.textBaseline = 'middle';
             this.context.textAlign = "center";
-            this.context.font = `${ this.cells[0].size * 3 }px Helvetica`;
+            this.context.font = `2em Helvetica`;
             this.context.fillStyle = "#828282";
             this.context.fillText("The game is paused.", this.canvas.width / 2, this.canvas.height / 2);
         } else {
@@ -104,6 +99,35 @@ export default class Field {
         this.canvas.addEventListener("contextmenu", (event) => {
             event.preventDefault();
         });
+
+        this.eventListeners.set(
+            {
+                event: "mousedown",
+                target: this.canvas
+            },
+
+            (event) => {
+                this.draw();
+
+                let cell = this.locateCell(event.offsetX, event.offsetY);
+                if (!cell) return;
+
+                if (event.buttons === 1) { // left button
+                    cell.leftDown();
+                } else if (event.buttons > 2 && event.buttons < 8) { // middle or both left and right buttons
+                    cell.middleDown();
+                }
+            }
+        );
+
+        this.eventListeners.set(
+            {
+                event: "mouseleave",
+                target: this.canvas
+            },
+
+            (event) => this.draw()
+        );
 
         this.eventListeners.set(
             {
@@ -126,8 +150,6 @@ export default class Field {
                 } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
                     cell.middleUp();
                 }
-
-                this.draw();
             }
         );
 
@@ -142,6 +164,5 @@ export default class Field {
         });
 
         this.eventListeners.clear();
-        console.log(this.eventListeners);
     }
 }
