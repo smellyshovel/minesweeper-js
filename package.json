@@ -1,7 +1,7 @@
 {
   "name": "minesweeper-js",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A minesweeper game JavaScript implementation",
   "author": "Matthew Mamonov <g.smellyshovel@gmail.com>",
   "license": "MIT",
