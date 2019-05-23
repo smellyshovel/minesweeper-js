@@ -26,7 +26,7 @@ export default class Field {
     }
 
     get flaggedCells() {
-        return this.cells.filter(cell => cell.isFalgged);
+        return this.cells.filter(cell => cell.isFlagged);
     }
 
     initCells() {
@@ -100,6 +100,8 @@ export default class Field {
             event.preventDefault();
         });
 
+        let ignoreNextUp = false;
+
         this.eventListeners.set(
             {
                 event: "mousedown",
@@ -107,6 +109,7 @@ export default class Field {
             },
 
             (event) => {
+                // force draw to insure the latest state is visible
                 this.draw();
 
                 let cell = this.locateCell(event.offsetX, event.offsetY);
@@ -117,6 +120,36 @@ export default class Field {
                 } else if (event.buttons > 2 && event.buttons < 8) { // middle or both left and right buttons
                     cell.middleDown();
                 }
+
+                ignoreNextUp = false;
+            }
+        );
+
+        // the last mousemove'd cell
+        let lastCell;
+
+        this.eventListeners.set(
+            {
+                event: "mousemove",
+                target: this.canvas
+            },
+
+            (event) => {
+                let cell = this.locateCell(event.offsetX, event.offsetY);
+                if (!cell) return;
+
+                if (lastCell !== cell) {
+                    // force draw to insure the latest state is visible
+                    if (event.buttons) this.draw();
+
+                    if (event.buttons === 1) { // left button
+                        cell.leftDown();
+                    } else if (event.buttons > 2 && event.buttons < 8) { // middle or both left and right buttons
+                        cell.middleDown();
+                    }
+
+                    lastCell = cell;
+                }
             }
         );
 
@@ -126,7 +159,10 @@ export default class Field {
                 target: this.canvas
             },
 
-            (event) => this.draw()
+            (event) => {
+                this.draw();
+                ignoreNextUp = false;
+            }
         );
 
         this.eventListeners.set(
@@ -141,14 +177,16 @@ export default class Field {
 
                 if (event.buttons === 0) { // no more buttons are down
                     if (event.button === 0) { // left button
-                        cell.leftUp();
+                        if (!ignoreNextUp) cell.leftUp();
                     } else if (event.button === 2) { // right button
-                        cell.rightUp();
+                        if (!ignoreNextUp) cell.rightUp();
                     } else if (event.button === 1) { // middle button
                         cell.middleUp();
+                        ignoreNextUp = true;
                     }
                 } else if (event.buttons > 0 && event.buttons < 8) { // either left or right button is still down
                     cell.middleUp();
+                    ignoreNextUp = true;
                 }
             }
         );

@@ -76,7 +76,7 @@ export default class Cell {
         }
 
         (function openCell(cell) {
-            if (!cell.isClosed || cell.isFlagged || cell.isDoubted) return;
+            if (cell.isOpened || cell.isFlagged || cell.isDoubted) return;
 
             if (cell.isMined) {
                 cell.isClosed = false;
@@ -113,6 +113,8 @@ export default class Cell {
             this.isFlagged = true;
             this.image = "flag";
         }
+
+        this.field.game.dispatch("cellflag", this);
     }
 
     leftDown() {
@@ -132,9 +134,8 @@ export default class Cell {
     }
 
     middleDown() {
-        this.tempImage = "closed";
         this.neighbours.forEach(neighbour => {
-            if (neighbour.isClosed && !neighbour.isFalgged && !neighbour.isDoubted) {
+            if (neighbour.isClosed && !neighbour.isFlagged && !neighbour.isDoubted) {
                 neighbour.tempImage = "0";
             }
         });
@@ -142,14 +143,10 @@ export default class Cell {
 
     middleUp() {
         if (this.isOpened && this.value) {
-            let flaggedNeighbours = this.neighbours.filter(neighbour => {
-                return neighbour.isFlagged;
-            });
+            let flaggedNeighbours = this.neighbours.filter(neighbour => neighbour.isFlagged);
 
             if (flaggedNeighbours.length === this.value) {
-                this.neighbours.forEach(neighbour => {
-                    neighbour.open();
-                });
+                this.neighbours.forEach(neighbour => neighbour.open());
             }
         }
 

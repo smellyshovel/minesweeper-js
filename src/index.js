@@ -2,9 +2,9 @@ import Minesweeper from "./minesweeper";
 
 let game = new Minesweeper({
     canvas: document.querySelector("canvas#minesweeper"),
-    width: 16,
+    width: 30,
     height: 16,
-    mines: 11
+    mines: 12
 });
 
 let pauseButton = document.querySelector("#pause");
@@ -20,6 +20,7 @@ pauseButton.addEventListener("click", (event) => {
 });
 
 let flagsCounterElement = document.querySelector("#flags-counter");
+flagsCounterElement.innerHTML = `0 / 12`;
 
 game
 .on("start", (game) => {
@@ -31,7 +32,7 @@ game
 })
 .on("cellflag", (cell) => {
     console.log(`The [${ cell.x }, ${ cell.y }] cell has been flagged`);
-    flagsCounterElement.innerHTML = `${ game.field.flaggedCells } / ${ game.field.minedCells.length }`;
+    flagsCounterElement.innerHTML = `${ game.field.flaggedCells.length } / 12`;
 })
 .on("pause", () => {
     console.log("The game is paused.");
