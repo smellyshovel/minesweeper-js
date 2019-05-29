@@ -140,7 +140,7 @@ export default class Field {
 
                 if (lastCell !== cell) {
                     // force draw to insure the latest state is visible
-                    if (event.buttons) this.draw();
+                    this.draw();
 
                     if (event.buttons === 1) { // left button
                         cell.leftDown();

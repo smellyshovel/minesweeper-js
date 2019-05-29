@@ -75,7 +75,7 @@ export default class Cell {
             this.field.game.dispatch("start", this.field.game);
         }
 
-        (function openCell(cell) {
+        (function openCell(cell, isRecursive) {
             if (cell.isOpened || cell.isFlagged || cell.isDoubted) return;
 
             if (cell.isMined) {
@@ -85,12 +85,14 @@ export default class Cell {
                 cell.isClosed = false;
 
                 if (cell.value === 0) {
-                    cell.neighbours.forEach(neighbour => openCell(neighbour));
+                    cell.neighbours.forEach(neighbour => openCell(neighbour, true));
                 }
             }
-        })(this);
 
-        this.field.game.dispatch("cellopen", this);
+            if (!isRecursive) {
+                cell.field.game.dispatch("cellopen", cell);
+            }
+        })(this);
     }
 
     flag(force) {

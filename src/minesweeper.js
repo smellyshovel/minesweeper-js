@@ -60,7 +60,7 @@ export default class Minesweeper {
             this.field.draw();
             this.field.registerEventListeners();
         })
-        .on("end", (result) => {
+        .on("end", () => {
             this.isEnded = true;
             this.field.unregisterEventListeners();
         });
@@ -87,5 +87,10 @@ export default class Minesweeper {
                 listener.call(this, ...params);
             }
         });
+    }
+
+    destroy() {
+        this.dispatch("end");
+        return null;
     }
 }
