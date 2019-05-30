@@ -1,163 +1,172 @@
-import Minesweeper from "./minesweeper";
+const Settings = {
+    get defaultPresets() {
+        return {
+            easy: {
+                width: 9,
+                height: 9,
+                mines: 10
+            },
 
-// if there're no settings then initialize defaults and save them
-if (!localStorage.getItem("settings")) {
-    localStorage.setItem("settings", JSON.stringify({
-        width: 16,
-        height: 16,
-        mines: 40
-    }));
-}
+            medium: {
+                width: 16,
+                height: 16,
+                mines: 40
+            },
 
-// current settings
-let settings = JSON.parse(localStorage.getItem("settings"));
+            hard: {
+                width: 30,
+                height: 16,
+                mines: 99
+            }
+        };
+    },
 
-let difficultyElement = document.querySelector("#difficulty");
-let widthElement = document.querySelector("#width");
-let heightElement = document.querySelector("#height");
-let minesElement = document.querySelector("#mines");
+    get difficulty() {
+        return localStorage.getItem("difficulty");
+    },
 
-// insert current values into HTML
-widthElement.value = settings.width;
-heightElement.value = settings.height;
-minesElement.value = settings.mines;
+    set difficulty(val) {
+        localStorage.setItem("difficulty", val);
+    },
 
-if (settings.width === 9 && settings.height === 9 && settings.mines === 10) {
-    difficultyElement.value = "easy";
-} else if (settings.width === 16 && settings.height === 16 && settings.mines === 40) {
-    difficultyElement.value = "medium";
-} else if (settings.width === 30 && settings.height === 16 && settings.mines === 99) {
-    difficultyElement.value = "hard";
-} else {
-    difficultyElement.value = "custom";
-}
+    get customPreset() {
+        return JSON.parse(localStorage.getItem("customPreset"));
+    },
 
-// update saved settings on difficulty change
-difficultyElement.addEventListener("change", function(event) {
-    if (this.value === "easy") {
-        localStorage.setItem("settings", JSON.stringify({
-            width: 9,
-            height: 9,
-            mines: 10
-        }));
-    } else if (this.value === "medium") {
-        localStorage.setItem("settings", JSON.stringify({
-            width: 16,
-            height: 16,
-            mines: 40
-        }));
-    } else if (this.value === "hard") {
-        localStorage.setItem("settings", JSON.stringify({
-            width: 30,
-            height: 16,
-            mines: 99
-        }));
-    } else if (this.value === "custom") {
-        localStorage.setItem("settings", JSON.stringify({
-            width: widthElement.value,
-            height: heightElement.value,
-            mines: minesElement.value
-        }));
+    set customPreset(val) {
+        localStorage.setItem("customPreset", JSON.stringify(val));
+    },
+
+    set customWidth(val) {
+        let customPreset = this.customPreset;
+        customPreset.width = val;
+        this.customPreset = customPreset;
+    },
+
+    set customHeight(val) {
+        let customPreset = this.customPreset;
+        customPreset.height = val;
+        this.customPreset = customPreset;
+    },
+
+    set customMines(val) {
+        let customPreset = this.customPreset;
+        customPreset.mines = val;
+        this.customPreset = customPreset;
+    },
+
+    get width() {
+        if (this.difficulty !== "custom") {
+            return +this.defaultPresets[this.difficulty].width;
+        } else {
+            return +this.customPreset.width;
+        }
+    },
+
+    get height() {
+        if (this.difficulty !== "custom") {
+            return +this.defaultPresets[this.difficulty].height;
+        } else {
+            return +this.customPreset.height;
+        }
+    },
+
+    get mines() {
+        if (this.difficulty !== "custom") {
+            return +this.defaultPresets[this.difficulty].mines;
+        } else {
+            return +this.customPreset.mines;
+        }
     }
-
-    settings = JSON.parse(localStorage.getItem("settings"));
-});
-
-// show custom settings inputs when difficulty becomes "custom"
-function showCustomSettings() {
-    document.querySelector("#settings > .custom").hidden = false;
 }
 
-function hideCustomSettings() {
-    document.querySelector("#settings > .custom").hidden = true;
+if (!Settings.difficulty) {
+    Settings.difficulty = "medium";
 }
 
-if (difficultyElement.value === "custom") {
-    showCustomSettings();
+if (!Settings.customPreset) {
+    Settings.customPreset = {
+        width: 20,
+        height: 20,
+        mines: 20
+    }
 }
 
-difficultyElement.addEventListener("change", function(event) {
-    if (this.value === "custom") {
-        showCustomSettings();
+let difficultyInput = document.querySelector("#difficulty");
+let widthInput = document.querySelector("#width");
+let heightInput = document.querySelector("#height");
+let minesInput = document.querySelector("#mines");
+
+difficultyInput.value = Settings.difficulty;
+
+function updateInputs() {
+    widthInput.value = Settings.width;
+    heightInput.value = Settings.height;
+    minesInput.value = Settings.mines;
+
+    if (Settings.difficulty !== "custom") {
+        widthInput.disabled = true;
+        heightInput.disabled = true;
+        minesInput.disabled = true;
     } else {
-        hideCustomSettings();
+        widthInput.disabled = false;
+        heightInput.disabled = false;
+        minesInput.disabled = false;
     }
-});
+}
 
-// update settings on custom params change
+updateInputs();
+
 function updateMines() {
-    let maxMines = settings.width * settings.height - 10;
-    minesElement.max = maxMines;
+    minesInput.max = Settings.width * Settings.height - 10;
 
-    if (minesElement.value > maxMines) {
-        minesElement.value = maxMines;
+    if (+minesInput.value > +minesInput.max) {
+        minesInput.value = minesInput.max;
     }
+
+    Settings.customMines = minesInput.value;
 }
 
 updateMines();
 
-widthElement.addEventListener("change", function() {
-    localStorage.setItem("settings", JSON.stringify({
-        width: this.value,
-        height: settings.height,
-        mines: settings.mines
-    }));
+difficultyInput.addEventListener("change", function() {
+    Settings.difficulty = this.value;
+    updateInputs();
+});
 
-    settings = JSON.parse(localStorage.getItem("settings"));
+widthInput.addEventListener("change", function() {
+    Settings.customWidth = this.value;
     updateMines();
 });
 
-heightElement.addEventListener("change", function() {
-    localStorage.setItem("settings", JSON.stringify({
-        width: settings.width,
-        height: this.value,
-        mines: settings.mines
-    }));
-
-    settings = JSON.parse(localStorage.getItem("settings"));
+heightInput.addEventListener("change", function() {
+    Settings.customHeight = this.value;
     updateMines();
 });
 
-minesElement.addEventListener("change", function() {
-    localStorage.setItem("settings", JSON.stringify({
-        width: settings.width,
-        height: settings.height,
-        mines: this.value
-    }));
-
+minesInput.addEventListener("change", function() {
     updateMines();
-    settings = JSON.parse(localStorage.getItem("settings"));
 });
 
-let game = startNewGame();
+import Minesweeper from "./minesweeper";
 
-// when "start new game" button is clicked ask for confirmation if needed and start a new game
-document.querySelector("#new").addEventListener("click", function() {
-    if (game.isStarted && !game.isEnded && !confirm("Are you sure you want to end the current game?")) return;
-
-    game = game.destroy();
-    game = startNewGame();
-});
+let game;
 
 function startNewGame() {
-    let game = new Minesweeper({
+    if (game) game = game.destroy();
+
+    game = new Minesweeper({
         canvas: document.querySelector("#minesweeper"),
-        ...settings
+        width: Settings.width,
+        height: Settings.height,
+        mines: Settings.mines
     });
+};
 
-    let flagsElement = document.querySelector("#flags");
-    flagsElement.innerHTML = `0 / ${ settings.mines }`;
+startNewGame();
 
-    game
-    .on("start", () => {
-
-    })
-    .on("cellflag", () => {
-        flagsElement.innerHTML = `${ game.field.flaggedCells.length } / ${ settings.mines }`;
-    })
-    .on("end", (result) => {
-        console.log(result);
-    });
-
-    return game;
-}
+document.querySelector("#start").addEventListener("click", function() {
+    if (game.isStarted && !game.isEnded && confirm("Are you sure?")) {
+        startNewGame();
+    }
+});

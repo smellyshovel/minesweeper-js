@@ -30,55 +30,39 @@
     <body>
         <header>
             <h1>Minesweeper JS</h1>
+            <h2>A JavaScript implementation of the Minesweeper game</h2>
 
-            <h2>A Minesweeper Game JavaScript Implementation</h2>
+            <p id="settings">
+                <select id="difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                    <option value="custom">Custom</option>
+                </select>
 
-            <div class="settings">
-                <details>
-                    <summary>Settings</summary>
+                <input id="width" type="number" min="5" max="50">
+                <input id="height" type="number" min="5" max="50">
+                <input id="mines" type="number" min="1">
+            </p>
 
-                    <form id="settings">
-                        <label for="difficulty">Difficulty</label>
-                        <select id="difficulty">
-                            <option value="easy">Easy</option>
-                            <option value="medium">Medium</option>
-                            <option value="hard">Hard</option>
-                            <option value="custom">Custom</option>
-                        </select>
-
-                        <div class="custom" hidden>
-                            <label for="width">Width</label>
-                            <input id="width" type="number" min="5" max="50" value="9">
-
-                            <label for="height">Height</label>
-                            <input id="height" type="number" min="5" max="50" value="9">
-
-                            <label for="mines">Mines</label>
-                            <input id="mines" type="number" min="1">
-                        </div>
-                    </form>
-                </details>
-            </div>
-
-            <div class="controls">
-                <button id="new">Start new game</button>
-                <button>Pause</button>
-            </div>
+            <p id="controls">
+                <button id="start">Start new game</button>
+                <button id="pause" disabled>Pause</button>
+            </p>
         </header>
-        <main class="game">
-            <div id="result"></div>
-            <canvas id="minesweeper" width="800" height="600"></canvas>
-
-            <div>
-                <span id="flags"></span>
-                <span id="timer"></span>
-            </div>
+        <main>
+            <p>
+                <canvas id="minesweeper"></canvas>
+            </p>
+            <p>
+                <output id="flags"></output>
+            </p>
         </main>
         <footer>
-            <p>Matthew Mamonov aka smellyshovel © 2019 (MIT)</p>
-            <p>
-                <a href="https://github.com/smellyshovel/minesweeper-js">GitHub</a>
-            </p>
+            <address>
+                Matthew Mamonov aka smellyshovel &lt;g.smellyshovel@gmail.com&gt; (<a href="#">GitHub</a>)
+            </address>
+            <p>© 2019</p>
         </footer>
     </body>
 </html>
