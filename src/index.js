@@ -150,23 +150,112 @@ minesInput.addEventListener("change", function() {
 
 import Minesweeper from "./minesweeper";
 
-let game;
+let timerOutput = document.querySelector("#timer");
+timerOutput.value = "00:00";
+
+let timer, time = 0;
+
+function startTimer() {
+    timer = setInterval(function() {
+        time += 1;
+        outputTime();
+        // clock =
+    }, 1000);
+}
+
+function stopTimer(clear) {
+    clearInterval(timer);
+    if (clear) time = 0, outputTime();
+}
+
+function outputTime() {
+    let minutes = time / 60 | 0;
+    let seconds = time % 60;
+
+    timerOutput.innerHTML = `${ minutes < 10 ? `${ "0" + minutes }` : minutes }:${ seconds < 10 ? `${ "0" + seconds }` : seconds }`;
+}
+
+let pauseButton = document.querySelector("#pause");
+
+let game = startNewGame();
 
 function startNewGame() {
-    if (game) game = game.destroy();
-
-    game = new Minesweeper({
+    let game = new Minesweeper({
         canvas: document.querySelector("#minesweeper"),
         width: Settings.width,
         height: Settings.height,
         mines: Settings.mines
     });
+
+    let resultOutput = document.querySelector("#result");
+    resultOutput.value = "";
+
+    let flagsOutput = document.querySelector("#flags");
+    flagsOutput.value = `0 / ${ Settings.mines }`;
+
+    game
+    .on("start", function() {
+        startTimer();
+        pauseButton.disabled = false;
+    })
+    .on("pause", function() {
+        stopTimer();
+        pauseButton.innerHTML = "Resume";
+    })
+    .on("resume", function() {
+        startTimer();
+        pauseButton.innerHTML = "Pause";
+    })
+    .on("cellflag", function() {
+        flagsOutput.value = `${ game.field.flaggedCells.length } / ${ Settings.mines }`;
+    })
+    .on("end", function(result) {
+        if (result === "won") {
+            resultOutput.value = "You won! Congratulations!";
+            resultOutput.classList.add("visible");
+        } else if (result === "lost") {
+            resultOutput.value = "You lost :(";
+            resultOutput.classList.add("visible");
+        }
+
+        setTimeout(() => {
+            resultOutput.classList.remove("visible");
+        }, 2000);
+
+        pauseButton.disabled = true;
+
+        stopTimer();
+    });
+
+    return game;
 };
 
-startNewGame();
-
 document.querySelector("#start").addEventListener("click", function() {
-    if (game.isStarted && !game.isEnded && confirm("Are you sure?")) {
-        startNewGame();
+    if (game.isStarted && !game.isEnded && !confirm("Are you sure?")) return;
+
+    game = game.destroy();
+    game = startNewGame();
+
+    stopTimer(true);
+});
+
+pauseButton.addEventListener("click", function() {
+    if (game.isPaused) {
+        game.resume();
+    } else {
+        game.pause();
     }
+});
+
+function resizeCanvas() {
+    let canvas = document.querySelector("#minesweeper");
+    canvas.width = canvas.getBoundingClientRect().width;
+    canvas.height = canvas.getBoundingClientRect().height;
+    game.field.draw();
+}
+
+resizeCanvas();
+
+window.addEventListener("resize", function(event) {
+    resizeCanvas();
 });
