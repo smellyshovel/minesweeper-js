@@ -2,7 +2,8 @@ import Field from "./field";
 
 export default class Minesweeper {
     constructor({
-        canvas, // a <canvas> DOM element
+        canvas, // a <canvas> DOM element,
+        theme, // a set of images
         width = 9, // number of cells by the X axis
         height = 9, // number of cells by the Y axis
         mines = 10 // number of mines on the field
@@ -21,6 +22,7 @@ export default class Minesweeper {
         this.field = new Field({
             game: this,
             canvas,
+            theme,
             width,
             height,
             mines

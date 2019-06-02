@@ -1,13 +1,3 @@
-import ImageSources from "./assets/cells/*.svg";
-const Images = {};
-
-for (let name in ImageSources) {
-    let img = new Image();
-    img.src = ImageSources[name];
-
-    Images[name] = img;
-}
-
 export default class Cell {
     constructor(field, x, y) {
         this.field = field;
@@ -15,7 +5,7 @@ export default class Cell {
         this.x = x;
         this.y = y;
 
-        this._image = Images.closed;
+        this._image = this.Images.closed;
 
         this.isMined = false;
         this.value = 0;
@@ -25,8 +15,12 @@ export default class Cell {
         this.isDoubted = false;
     }
 
+    get Images() {
+        return this.field.theme;
+    }
+
     set image(val) {
-        this._image = Images[`${ val }`];
+        this._image = this.Images[`${ val }`];
         this.draw();
     }
 

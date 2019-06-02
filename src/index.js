@@ -177,11 +177,24 @@ function outputTime() {
 
 let pauseButton = document.querySelector("#pause");
 
+import ImageSources from "./assets/cells/*.svg";
+const Images = {};
+
+for (let name in ImageSources) {
+    let img = new Image();
+    img.src = ImageSources[name];
+
+    Images[name] = img;
+}
+
 let game = startNewGame();
 
 function startNewGame() {
     let game = new Minesweeper({
         canvas: document.querySelector("#minesweeper"),
+        theme: {
+            ...Images
+        },
         width: Settings.width,
         height: Settings.height,
         mines: Settings.mines

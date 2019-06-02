@@ -1,11 +1,13 @@
 import Cell from "./cell";
 
 export default class Field {
-    constructor({ game, canvas, ...props }) {
+    constructor({ game, canvas, theme, ...props }) {
         this.game = game;
 
         this.canvas = canvas;
         this.context = canvas.getContext("2d");
+
+        this.theme = theme;
 
         this.props = props;
 
