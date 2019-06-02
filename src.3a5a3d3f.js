@@ -5,40 +5,40 @@ parcelRequire=function(e,r,t,n){var i,o="function"==typeof parcelRequire&&parcel
 },{"./cell":"oKBw"}],"RDHe":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.default=void 0;var e=n(require("./field"));function n(e){return e&&e.__esModule?e:{default:e}}function t(e,n){if(!(e instanceof n))throw new TypeError("Cannot call a class as a function")}function i(e,n){for(var t=0;t<n.length;t++){var i=n[t];i.enumerable=i.enumerable||!1,i.configurable=!0,"value"in i&&(i.writable=!0),Object.defineProperty(e,i.key,i)}}function r(e,n,t){return n&&i(e.prototype,n),t&&i(e,t),e}var s=function(){function n(i){var r=this,s=i.canvas,o=i.theme,a=i.width,u=void 0===a?9:a,c=i.height,l=void 0===c?9:c,d=i.mines,f=void 0===d?10:d;if(t(this,n),u<5||u>50||l<5||l>50)throw new Error("Incorrect field size. The field must be from 5×5 to 50×50 cells large, but ".concat(u,"×").concat(l," is provided"));if(f<1||f>u*l-10)throw new Error("Incorrect number of mines. For the ".concat(u,"×").concat(l," field it must be between 1 and ").concat(u*l-10,", but ").concat(f," is provided"));this.eventListeners={},this.field=new e.default({game:this,canvas:s,theme:o,width:u,height:l,mines:f}),this.on("start",function(){r.isStarted=!0}).on("cellopen",function(e){var n=r.field.closedCells.every(function(e){return e.isMined}),t=r.field.openedCells.some(function(e){return e.isMined});n?(r.field.minedCells.forEach(function(e){return e.flag(!0)}),r.dispatch("end","won")):t&&(r.field.minedCells.forEach(function(e){e.isFlagged||(e.image="mine")}),r.field.flaggedCells.forEach(function(e){e.isMined||(e.image="cross")}),e.image="trigger",r.dispatch("end","lost"))}).on("pause",function(){r.isPaused=!0,r.field.draw(),r.field.unregisterEventListeners()}).on("resume",function(){r.isPaused=!1,r.field.draw(),r.field.registerEventListeners()}).on("end",function(){r.isEnded=!0,r.field.unregisterEventListeners()})}return r(n,[{key:"pause",value:function(){this.dispatch("pause")}},{key:"resume",value:function(){this.dispatch("resume")}},{key:"on",value:function(e,n){return this.eventListeners[e]||(this.eventListeners[e]=[]),this.eventListeners[e].push(n),this}},{key:"dispatch",value:function(e){for(var n=this,t=arguments.length,i=new Array(t>1?t-1:0),r=1;r<t;r++)i[r-1]=arguments[r];(this.eventListeners[e]||[]).forEach(function(e){"function"==typeof e&&e.call.apply(e,[n].concat(i))})}},{key:"destroy",value:function(){return this.dispatch("end"),null}}]),n}();exports.default=s;
 },{"./field":"daBI"}],"dvan":[function(require,module,exports) {
-module.exports="/0.32b56907.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/0.32b56907.svg";
 },{}],"jAw7":[function(require,module,exports) {
-module.exports="/1.1535b81c.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/1.1535b81c.svg";
 },{}],"HpLg":[function(require,module,exports) {
-module.exports="/2.38118a17.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/2.38118a17.svg";
 },{}],"Ij4D":[function(require,module,exports) {
-module.exports="/3.ea6367f1.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/3.ea6367f1.svg";
 },{}],"jf94":[function(require,module,exports) {
-module.exports="/4.88a6d396.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/4.88a6d396.svg";
 },{}],"nlkE":[function(require,module,exports) {
-module.exports="/5.07e3e4bc.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/5.07e3e4bc.svg";
 },{}],"6vcT":[function(require,module,exports) {
-module.exports="/6.7ee1afff.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/6.7ee1afff.svg";
 },{}],"jqwv":[function(require,module,exports) {
-module.exports="/7.ea8ba088.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/7.ea8ba088.svg";
 },{}],"oj97":[function(require,module,exports) {
-module.exports="/8.a033afbb.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/8.a033afbb.svg";
 },{}],"S7wi":[function(require,module,exports) {
-module.exports="/9.0f6b0e5c.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/9.0f6b0e5c.svg";
 },{}],"9pbL":[function(require,module,exports) {
-module.exports="/closed.9b4f97ec.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/closed.9b4f97ec.svg";
 },{}],"Xdtj":[function(require,module,exports) {
-module.exports="/cross.9e772f39.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/cross.9e772f39.svg";
 },{}],"TmOo":[function(require,module,exports) {
-module.exports="/doubt.82d5a87c.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/doubt.82d5a87c.svg";
 },{}],"f01j":[function(require,module,exports) {
-module.exports="/flag.62f1c00a.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/flag.62f1c00a.svg";
 },{}],"nNqA":[function(require,module,exports) {
-module.exports="/mine.ebb78dd7.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/mine.ebb78dd7.svg";
 },{}],"9XMR":[function(require,module,exports) {
-module.exports="/trigger.4efa3ad9.svg";
+module.exports="https://smellyshovel.github.io/minesweeper-js/trigger.4efa3ad9.svg";
 },{}],"gEv/":[function(require,module,exports) {
 module.exports={0:require("./0.svg"),1:require("./1.svg"),2:require("./2.svg"),3:require("./3.svg"),4:require("./4.svg"),5:require("./5.svg"),6:require("./6.svg"),7:require("./7.svg"),8:require("./8.svg"),9:require("./9.svg"),closed:require("./closed.svg"),cross:require("./cross.svg"),doubt:require("./doubt.svg"),flag:require("./flag.svg"),mine:require("./mine.svg"),trigger:require("./trigger.svg")};
 },{"./0.svg":"dvan","./1.svg":"jAw7","./2.svg":"HpLg","./3.svg":"Ij4D","./4.svg":"jf94","./5.svg":"nlkE","./6.svg":"6vcT","./7.svg":"jqwv","./8.svg":"oj97","./9.svg":"S7wi","./closed.svg":"9pbL","./cross.svg":"Xdtj","./doubt.svg":"TmOo","./flag.svg":"f01j","./mine.svg":"nNqA","./trigger.svg":"9XMR"}],"Focm":[function(require,module,exports) {
 "use strict";var e=i(require("./minesweeper")),t=i(require("./assets/cells/*.svg"));function i(e){return e&&e.__esModule?e:{default:e}}function n(e){for(var t=1;t<arguments.length;t++){var i=null!=arguments[t]?arguments[t]:{},n=Object.keys(i);"function"==typeof Object.getOwnPropertySymbols&&(n=n.concat(Object.getOwnPropertySymbols(i).filter(function(e){return Object.getOwnPropertyDescriptor(i,e).enumerable}))),n.forEach(function(t){s(e,t,i[t])})}return e}function s(e,t,i){return t in e?Object.defineProperty(e,t,{value:i,enumerable:!0,configurable:!0,writable:!0}):e[t]=i,e}var u={get defaultPresets(){return{easy:{width:9,height:9,mines:10},medium:{width:16,height:16,mines:40},hard:{width:30,height:16,mines:99}}},get difficulty(){return localStorage.getItem("difficulty")},set difficulty(e){localStorage.setItem("difficulty",e)},get customPreset(){return JSON.parse(localStorage.getItem("customPreset"))},set customPreset(e){localStorage.setItem("customPreset",JSON.stringify(e))},set customWidth(e){var t=this.customPreset;t.width=e,this.customPreset=t},set customHeight(e){var t=this.customPreset;t.height=e,this.customPreset=t},set customMines(e){var t=this.customPreset;t.mines=e,this.customPreset=t},get width(){return"custom"!==this.difficulty?+this.defaultPresets[this.difficulty].width:+this.customPreset.width},get height(){return"custom"!==this.difficulty?+this.defaultPresets[this.difficulty].height:+this.customPreset.height},get mines(){return"custom"!==this.difficulty?+this.defaultPresets[this.difficulty].mines:+this.customPreset.mines}};u.difficulty||(u.difficulty="medium"),u.customPreset||(u.customPreset={width:20,height:20,mines:20});var r=document.querySelector("#difficulty"),c=document.querySelector("#width"),o=document.querySelector("#height"),a=document.querySelector("#mines");function l(){c.value=u.width,o.value=u.height,a.value=u.mines,"custom"!==u.difficulty?(c.disabled=!0,o.disabled=!0,a.disabled=!0):(c.disabled=!1,o.disabled=!1,a.disabled=!1)}function d(){a.max=u.width*u.height-10,+a.value>+a.max&&(a.value=a.max),u.customMines=a.value}r.value=u.difficulty,l(),d(),r.addEventListener("change",function(){u.difficulty=this.value,l()}),c.addEventListener("change",function(){u.customWidth=this.value,d()}),o.addEventListener("change",function(){u.customHeight=this.value,d()}),a.addEventListener("change",function(){d()});var f=document.querySelector("#timer");f.value="00:00";var h,m=0;function g(){h=setInterval(function(){m+=1,y()},1e3)}function v(e){clearInterval(h),e&&(m=0,y())}function y(){var e=m/60|0,t=m%60;f.innerHTML="".concat(e<10?"".concat("0"+e):e,":").concat(t<10?"".concat("0"+t):t)}var w=document.querySelector("#pause"),P={};for(var b in t.default){var S=new Image;S.src=t.default[b],P[b]=S}var p=q();function q(){var t=new e.default({canvas:document.querySelector("#minesweeper"),theme:n({},P),width:u.width,height:u.height,mines:u.mines}),i=document.querySelector("#result");i.value="";var s=document.querySelector("#flags");return s.value="0 / ".concat(u.mines),t.on("start",function(){g(),w.disabled=!1}).on("pause",function(){v(),w.innerHTML="Resume"}).on("resume",function(){g(),w.innerHTML="Pause"}).on("cellflag",function(){s.value="".concat(t.field.flaggedCells.length," / ").concat(u.mines)}).on("end",function(e){"won"===e?(i.value="You won! Congratulations!",i.classList.add("visible")):"lost"===e&&(i.value="You lost :(",i.classList.add("visible")),setTimeout(function(){i.classList.remove("visible")},2e3),w.disabled=!0,v()}),t}function L(){var e=document.querySelector("#minesweeper");e.width=e.getBoundingClientRect().width,e.height=e.getBoundingClientRect().height,p.field.draw()}document.querySelector("#start").addEventListener("click",function(){(!p.isStarted||p.isEnded||confirm("Are you sure?"))&&(p=p.destroy(),p=q(),v(!0))}),w.addEventListener("click",function(){p.isPaused?p.resume():p.pause()}),L(),window.addEventListener("resize",function(e){L()});
 },{"./minesweeper":"RDHe","./assets/cells/*.svg":"gEv/"}]},{},["Focm"], null)
-//# sourceMappingURL=/src.3a5a3d3f.js.map
+//# sourceMappingURL=https://smellyshovel.github.io/minesweeper-js/src.3a5a3d3f.js.map
